@@ -15,6 +15,10 @@ function showPicked(input) {
 }
 
 function analyze() {
+  console.log("click");
+  const url = el("url-input").value;
+  console.log(url);
+  if (url && url.length > 0) return analyzeURL(url)
   var uploadFiles = el("file-input").files;
   if (uploadFiles.length !== 1) alert("Please select a file to analyze!");
 
@@ -30,6 +34,7 @@ function analyze() {
     if (this.readyState === 4) {
       var response = JSON.parse(e.target.responseText);
       el("result-label").innerHTML = `Result = ${response["result"]}`;
+      el("result-label-probabilities").innerHTML = `Probabilities = ${data  ["probabilities"]}`
     }
     el("analyze-button").innerHTML = "Analyze";
   };
@@ -39,3 +44,17 @@ function analyze() {
   xhr.send(fileData);
 }
 
+function analyzeURL(url) {
+  el("analyze-button").innerHTML = "Analyzing...";
+  var xhr = new XMLHttpRequest();
+  console.log("rg1")
+  var loc = window.location;
+  console.log("rg2")
+  const res = fetch(`${loc.protocol}//${loc.hostname}:${loc.port}/classify-url?url=${url}`, {method: "POST"})
+                   .then(res => res.json())
+                   .then(data => { 
+                     el("result-label").innerHTML = `Result = ${data["result"]}`
+                     el("result-label-probabilities").innerHTML = `Probabilities = ${data["probabilities"]}`
+                     el("analyze-button").innerHTML = "Analyze";
+                   })
+}

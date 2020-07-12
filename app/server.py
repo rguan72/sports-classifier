@@ -9,10 +9,10 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse, JSONResponse
 from starlette.staticfiles import StaticFiles
 
-export_file_url = 'https://www.dropbox.com/s/6bgq8t6yextloqp/export.pkl?raw=1'
+export_file_url = 'https://drive.google.com/uc?export=download&id=1DYaKV_HFatT8BbvP3HZut3DQ8S5tiEMz'
 export_file_name = 'export.pkl'
 
-classes = ['black', 'grizzly', 'teddys']
+classes = ['basketball', 'ping_pong', 'squash', 'tennis']
 path = Path(__file__).parent
 
 app = Starlette()
@@ -42,6 +42,23 @@ async def setup_learner():
         else:
             raise
 
+async def predict_img_from_bytes(bytes):
+    img = open_image(BytesIO(bytes))
+    pred_class,_,losses = learn.predict(img)
+    return JSONResponse({
+        "result": pred_class.obj,
+        "probabilities": sorted(
+            zip(learn.data.classes, map(float, losses)),
+            key=lambda p: p[1],
+            reverse=True
+        )
+    })
+
+async def get_bytes(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.read()
+
 
 loop = asyncio.get_event_loop()
 tasks = [asyncio.ensure_future(setup_learner())]
@@ -54,15 +71,16 @@ async def homepage(request):
     html_file = path / 'view' / 'index.html'
     return HTMLResponse(html_file.open().read())
 
-
 @app.route('/analyze', methods=['POST'])
 async def analyze(request):
     img_data = await request.form()
     img_bytes = await (img_data['file'].read())
-    img = open_image(BytesIO(img_bytes))
-    prediction = learn.predict(img)[0]
-    return JSONResponse({'result': str(prediction)})
+    return predict_img_from_bytes(img_bytes)
 
+@app.route('/classify-url', methods=['POST'])
+async def classify(request):
+    bytes = await get_bytes(request.query_params['url'])
+    return await predict_img_from_bytes(bytes)
 
 if __name__ == '__main__':
     if 'serve' in sys.argv:

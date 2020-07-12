@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "sports-classifier"
+version = "0.1.0"
+description = ""
+authors = ["Richard Guan <rguan72@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+aiofiles = "0.4.0"
+aiohttp = "3.5.4"
+asyncio = "3.4.3"
+fastai = "1.0.52"
+torch = {url = "https://download.pytorch.org/whl/cpu/torch-1.1.0-cp37-cp37m-linux_x86_64.whl"}
+torchvision = {url = "https://download.pytorch.org/whl/cpu/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl"}
+numpy = "1.16.3"
+pillow = "~=6.0"
+python-multipart = "0.0.5"
+starlette = "0.12.0"
+uvicorn = "0.7.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
