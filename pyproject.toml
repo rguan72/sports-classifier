@@ -13,7 +13,7 @@ fastai = "1.0.52"
 torch = {url = "https://download.pytorch.org/whl/cpu/torch-1.1.0-cp37-cp37m-linux_x86_64.whl"}
 torchvision = {url = "https://download.pytorch.org/whl/cpu/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl"}
 numpy = "1.16.3"
-pillow = "~=6.0"
+pillow = "~=9.0"
 python-multipart = "0.0.5"
 starlette = "0.12.0"
 uvicorn = "0.7.1"
